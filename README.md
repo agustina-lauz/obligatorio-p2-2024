@@ -1,1 +1,0 @@
-# obligatorio-p2-2024
