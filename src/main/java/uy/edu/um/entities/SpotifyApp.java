@@ -122,4 +122,46 @@ public class SpotifyApp {
                         " - Artista: " + cancion.getArtista()));
 
     }
+
+    public static Map<String, Artista> getArtistasGlobal(String fechaInicio, String fechaFin) {
+        Map<String, Artista> artistas = new HashMap<>();
+        CSVFormat format = CSVFormat.DEFAULT
+                .withFirstRecordAsHeader()
+                .withIgnoreSurroundingSpaces()
+                .withEscape('\\')
+                .withQuote('"')
+                .withDelimiter(',');
+
+        try (BufferedReader br = new BufferedReader(new FileReader(csvFile));
+             CSVParser csvParser = new CSVParser(br, format)) {
+            for (CSVRecord record : csvParser) {
+                String nombreArtista = record.get("artists").trim();
+                if (!artistas.containsKey(nombreArtista)) {
+                    artistas.put(nombreArtista, new Artista(nombreArtista));
+                }
+                Artista artista = artistas.get(nombreArtista);
+                artista.setApariciones(artista.getApariciones() + 1);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return artistas;
+    }
+    public static void top7ArtistasMasApariciones(String fechaInicio, String fechaFin) {
+
+        Map<String, Artista> artistas = getArtistasGlobal(fechaInicio, fechaFin);
+        Comparator<Artista> comparator = Comparator.comparingInt(Artista::getApariciones);
+        MyHeap<Artista> artistasHeap = new MyHeap<>(comparator);
+        for (Artista artista : artistas.values()) {
+            artistasHeap.insert(artista);
+        }
+        List<Artista> topArtistas = artistasHeap.extractAllSorted();
+        Collections.reverse(topArtistas);
+        System.out.println("Imprimiendo top 7 de artistas con más apariciones entre el " + fechaInicio + " y " + fechaFin);
+        topArtistas.stream()
+                .limit(7)
+                .forEach(artista -> System.out.println("Nombre: " + artista.getNombre() +
+                        " - " + "apariciones: " + artista.getApariciones()));
+    }
+
 }
