@@ -1,79 +1,30 @@
 package uy.edu.um.tads.heap;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.PriorityQueue;
+import java.util.Comparator;
 
-public class MyHeap<T extends Comparable<T>> {
+public class MyHeap<T> {
+    private PriorityQueue<T> heap;
 
-    private T[] heapArray;
-    private int size;
-    private int capacity;
-
-    public MyHeap(int capacity ) {
-        this.capacity = capacity;
-        this.size = 0;
-        this.heapArray = (T[]) new Comparable[ capacity ];
+    public MyHeap(Comparator<T> comparator) {
+        heap = new PriorityQueue<>(comparator);
     }
 
-    public void insert( T dato ) {
-        if ( size >= capacity ) {
-            System.out.println(" heap lleno ");
-            return;
-        }
-        heapArray[size] = dato;
-        heapUp(size);
-        size ++;
-    }
-
-    public T get(){
-        if (size == 0) {
-            System.out.println(" El heap esta Vacio ");
-            return null;
-        }
-        T  top = heapArray[0];
-        //swap(0, size);
-        heapArray[0] = heapArray[size - 1];
-        size --;
-        heapDown(0);
-        return  top;
-    }
-
-
-    private void heapUp(int index ) {
-        int padreIndex = (index - 1) / 2;
-        while (index > 0 && heapArray[index].compareTo(heapArray[padreIndex]) > 0) {
-            swap(index,padreIndex);
-            index = padreIndex;
-            padreIndex = (index - 1) / 2;
+    public void insert(T item) {
+        heap.add(item);
+        if (heap.size() > 10) {
+            heap.poll();
         }
     }
 
-    private int heapDown(int index){
-        int leftChildrenIndex, rightChildrenIndex, largerChildrenIndex;
-
-        while (index < size){
-            leftChildrenIndex = index * 2 + 1;
-            rightChildrenIndex = index * 2 + 2;
-            largerChildrenIndex = index;
-
-            if(leftChildrenIndex < size && heapArray[leftChildrenIndex].compareTo(heapArray[largerChildrenIndex]) > 0) {
-                largerChildrenIndex = leftChildrenIndex;
-            }
-            if (rightChildrenIndex < size && heapArray[rightChildrenIndex].compareTo(heapArray[largerChildrenIndex]) > 0) {
-                largerChildrenIndex = rightChildrenIndex;
-            }
-            if(index == largerChildrenIndex){
-                break;
-            }
-            swap(index,largerChildrenIndex);
-            index  = largerChildrenIndex;
+    public List<T> extractAllSorted() {
+        List<T> sorted = new ArrayList<>();
+        while (!heap.isEmpty()) {
+            sorted.add(heap.poll());
         }
-
-        return index;
+        return sorted;
     }
-
-    private void swap(int i, int j ) {
-        T temp = heapArray[i];
-        heapArray[i] = heapArray[j];
-        heapArray[j] = temp;
-    }
-
 }
+
 

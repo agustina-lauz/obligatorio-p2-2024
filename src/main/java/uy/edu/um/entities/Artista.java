@@ -1,4 +1,4 @@
-package uy.edu.um.proyectoSpotify;
+package uy.edu.um.entities;
 
 import lombok.*;
 import uy.edu.um.tads.list.MyLinkedListImpl;
