@@ -1,17 +1,23 @@
 package uy.edu.um.entities;
-
 import lombok.*;
-import uy.edu.um.tads.list.MyLinkedListImpl;
-import uy.edu.um.tads.list.MyList;
+
 
 @Data
 @Builder
 @Setter
 @Getter
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
+
 
 public class Artista {
 
     private String nombre;
-    private MyList<Cancion> canciones = new MyLinkedListImpl<>();
+    private int apariciones = 0;
 
+    public Artista(String nombre) {
+        this.nombre = nombre;
+        this.apariciones = 0;  // Inicializa las apariciones a 0
+    }
 }

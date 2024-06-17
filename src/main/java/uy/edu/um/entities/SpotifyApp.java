@@ -164,4 +164,64 @@ public class SpotifyApp {
                         " - " + "apariciones: " + artista.getApariciones()));
     }
 
+
+    public static int contarAparicionesArtista(String fecha, String artistaBuscado) {
+        int apariciones = 0;
+        CSVFormat format = CSVFormat.DEFAULT
+                .withFirstRecordAsHeader()
+                .withIgnoreSurroundingSpaces()
+                .withEscape('\\')
+                .withQuote('"')
+                .withDelimiter(',');
+
+        try (BufferedReader br = new BufferedReader(new FileReader(csvFile));
+             CSVParser csvParser = new CSVParser(br, format)) {
+            for (CSVRecord record : csvParser) {
+                String fechaRegistro = record.get("snapshot_date").trim();
+                String artistas = record.get("artists");
+                if (fechaRegistro.equals(fecha) && artistas.contains(artistaBuscado)) {
+                    apariciones++;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return apariciones;
+
+    }
+    public static void imprimirAparicionesArtista(String fecha, String artista) {
+        int apariciones = contarAparicionesArtista(fecha, artista);
+        System.out.println("El artista " + artista + " apareció " + apariciones + " veces en la fecha " + fecha);
+    }
+
+    public static int getCancionesTempoFecha(String fechaInicio, String fechaFin, double minTempo, double maxTempo) {
+        int count = 0;
+        CSVFormat format = CSVFormat.DEFAULT
+                .withFirstRecordAsHeader()
+                .withIgnoreSurroundingSpaces()
+                .withEscape('\\')
+                .withQuote('"')
+                .withDelimiter(',');
+
+        try (BufferedReader br = new BufferedReader(new FileReader(csvFile));
+             CSVParser csvParser = new CSVParser(br, format)) {
+            for (CSVRecord record : csvParser) {
+                String fecha = record.get("snapshot_date").trim();
+                double tempo = Double.parseDouble(record.get("tempo").trim());
+                if ((fecha.compareTo(fechaInicio) >= 0 && fecha.compareTo(fechaFin) <= 0) && (tempo >= minTempo && tempo <= maxTempo)) {
+                    count++;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return count;
+    }
+    public static void imprimirCountTempo(String fechaInicio, String fechaFin, Double minTempo, Double maxTempo) {
+
+        int count = getCancionesTempoFecha(fechaInicio, fechaFin, minTempo, maxTempo);
+        System.out.println("Número de canciones con un tempo entre " + minTempo + " y " + maxTempo +
+                " desde " + fechaInicio + " hasta " + fechaFin + ": " + count);
+    }
+
 }
