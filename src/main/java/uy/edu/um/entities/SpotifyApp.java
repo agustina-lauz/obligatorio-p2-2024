@@ -1,8 +1,5 @@
 package uy.edu.um.entities;
 
-
-import uy.edu.um.entities.Artista;
-import uy.edu.um.entities.Cancion;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
