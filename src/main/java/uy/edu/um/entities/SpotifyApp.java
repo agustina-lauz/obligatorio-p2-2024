@@ -11,6 +11,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class SpotifyApp {
 
@@ -71,8 +72,10 @@ public class SpotifyApp {
 
     }
 
-    public static Map<String, Cancion> getCancionesGlobal(String date) {
-        Map<String, Cancion> canciones = new HashMap<>();
+    public static List<Cancion> getCancionesGlobal(String date) {
+        Map<String, Integer> songCountMap = new HashMap<>();
+        Map<String, Cancion> cancionesMap = new HashMap<>();
+
         CSVFormat format = CSVFormat.DEFAULT
                 .withFirstRecordAsHeader()
                 .withIgnoreSurroundingSpaces() // Ignora espacios en blanco alrededor de los delimitadores
@@ -82,12 +85,13 @@ public class SpotifyApp {
 
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile));
              CSVParser csvParser = new CSVParser(br, format)) {
+
             for (CSVRecord record : csvParser) {
                 String fecha = record.get("snapshot_date");
-                String recordCountry = record.get("country");
-                if ((fecha.equals(date.trim()) && recordCountry.isEmpty()) || recordCountry.equals(" ")) {
+                if (fecha.equals(date)) {
+                    String songId = record.get("spotify_id");
                     Cancion cancion = new Cancion(
-                            record.get("spotify_id"),
+                            songId,
                             record.get("name"),
                             record.get("artists"),
                             Integer.parseInt(record.get("daily_rank")),
@@ -95,31 +99,30 @@ public class SpotifyApp {
                             record.get("snapshot_date"),
                             Double.parseDouble(record.get("tempo"))
                     );
-                    canciones.put(cancion.getId(), cancion);
+
+                    songCountMap.merge(songId, 1, Integer::sum);
+                    cancionesMap.put(songId, cancion);
                 }
             }
+
+            // Ordenar las canciones por el conteo y devolver las primeras 5
+            return songCountMap.entrySet().stream()
+                    .sorted((e1, e2) -> e2.getValue().compareTo(e1.getValue()))
+                    .limit(5)
+                    .map(entry -> cancionesMap.get(entry.getKey()))
+                    .collect(Collectors.toList());
 
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return canciones;
+
+        return Collections.emptyList(); // Devuelve una lista vacía si no se encuentra ninguna canción
     }
     public static void top5CancionesGlobal(String date) {
 
-        Map<String, Cancion> cancionesMap = getCancionesGlobal(date);
-        Comparator<Cancion> comparator = Comparator.comparingInt(Cancion::getDailyRank).reversed();
-        MyHeap<Cancion> cancionesHeap = new MyHeap<>(comparator);
-        for (Cancion cancion : cancionesMap.values()) {
-            cancionesHeap.insert(cancion);
-        }
-        List<Cancion> topCanciones = cancionesHeap.extractAllSorted();
-        Collections.reverse(topCanciones);
-        System.out.println("Imprimiendo top 5 de canciones global en la fecha " + date);
-        topCanciones.stream()
-                .limit(5)  // Limita a 5 elementos
-                .forEach(cancion -> System.out.println("Posición: " + cancion.getDailyRank() +
-                        " - Nombre: " + cancion.getNombre() +
-                        " - Artista: " + cancion.getArtista()));
+        List<Cancion> resultado = getCancionesGlobal(date);
+        System.out.println("Imprimiendo las 5 canciones que más aparecen en los top 50:");
+        resultado.forEach(cancion -> System.out.println("Canción: " + cancion.getNombre()));
 
     }
 
