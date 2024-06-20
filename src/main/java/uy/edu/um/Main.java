@@ -36,5 +36,53 @@ public class Main {
             }
         }
 
+    private static void printTop10Pais() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Ingrese la fecha en formato: DD/MM/YYYY");
+        String date = scanner.nextLine();
+        System.out.println("Ingrese el país: ");
+        String country = scanner.nextLine();
+        app.top10CancionesPais(date, country);
+    }
+
+    private static void printTop5Global() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Ingrese la fecha en formato: DD/MM/YYYY");
+        String date = scanner.nextLine();
+        app.top5CancionesGlobal(date);
+    }
+    private static void printTop7Artista() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Ingrese la fecha desde en formato: DD/MM/YYYY");
+        String dateStart = scanner.nextLine();
+        System.out.println("Ingrese la fecha hasta en formato: DD/MM/YYYY");
+        String dateEnd = scanner.nextLine();
+        app.top7ArtistasMasApariciones(dateStart, dateEnd);
+
+
+    }
+    private static void printCountArtista() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Ingrese la fecha desde en formato: DD/MM/YYYY");
+        String date = scanner.nextLine();
+        System.out.println("Ingrese el nombre del artista: ");
+        String artist = scanner.nextLine();
+        app.imprimirAparicionesArtista(date, artist);
+
+    }
+
+    private static void printCountTempo() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Ingrese la fecha desde en formato: DD/MM/YYYY");
+        String dateStart = scanner.nextLine();
+        System.out.println("Ingrese la fecha hasta en formato: DD/MM/YYYY");
+        String dateEnd = scanner.nextLine();
+        System.out.println("Ingrese el tempo mínimo:");
+        double tempoMin = Double.parseDouble(scanner.nextLine());
+        System.out.println("Ingrese el tempo máximo:");
+        double tempoMax = Double.parseDouble(scanner.nextLine());
+        app.imprimirCountTempo(dateStart, dateEnd, tempoMin, tempoMax);
+        }
+
 
 }
