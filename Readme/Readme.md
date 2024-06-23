@@ -72,7 +72,8 @@ obligatorioTest
         │            └─ uy.edu.um
         │                ├── entities
         │                │           ├── Artista
-        │                │           └── Cancion
+        │                │           ├── Cancion
+        │                │           └── SpotifyApp
         │                ├── tads
         │                │     ├── heap
         │                │     │     └── MyHeap
@@ -94,8 +95,7 @@ obligatorioTest
         │                │         ├── BinaryTree
         │                │         ├── BinaryTreeImpl
         │                │         └── TreeNode
-        │                ├── Main
-        │                └── SpotifyApp
+        │                └── Main
         │
         │
         │
@@ -222,6 +222,16 @@ y que se encuentran entre fechaInicio y fechaFin con la cantidad de canciones qu
 
 
 ## 5. Medicion de la eficiencia
+- getCancionesPais - O(n)
+- getCancionesGlobal - O(n)
+- getArtistasGlobal - O(n)
+- contarAparicionesArtista - O(n)
+- imprimirAparicionesArtista - O(n)
+- getCancionesTempoFecha - O(n)
+- imprimirCountTempo - O(n)
+- top5CancionesGlobal - O(n)
+- top10CancionesPais - O(n log n)
+- top7ArtistasMasApariciones - O(n log n)
 
 
 
