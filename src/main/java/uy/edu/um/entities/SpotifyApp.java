@@ -28,7 +28,7 @@ public class SpotifyApp {
             for (CSVRecord record : csvParser) {
                 String fecha = record.get("snapshot_date");
                 String recordCountry = record.get("country");
-                if (fecha.equals(date) && recordCountry.equalsIgnoreCase(country.trim())) {
+                if (fecha.equals(date) && recordCountry.equals(country)){
                     Cancion cancion = new Cancion(
                             record.get("spotify_id"),
                             record.get("name"),
@@ -49,6 +49,7 @@ public class SpotifyApp {
     }
 
     public static void top10CancionesPais(String date, String country) {
+
         // Obtener canciones filtradas por fecha y país
         Map<String, Cancion> cancionesMap = getCancionesPais(date, country);
         // Definir un comparador para el heap basado en daily_rank
@@ -62,7 +63,9 @@ public class SpotifyApp {
         // Obtener e imprimir las top 10 canciones
         List<Cancion> topCanciones = cancionesHeap.extractAllSorted();
         Collections.reverse(topCanciones);
+        System.out.println("------------------------------------------------------------");
         System.out.println("Imprimiendo top 10 de canciones para el país " + country + " en la fecha " + date);
+        System.out.println("------------------------------------------------------------");
         topCanciones.forEach(cancion -> System.out.println("Posición: " + cancion.getDailyRank() +
                 " - Nombre: " + cancion.getNombre() + " - Artista: " + cancion.getArtista() ));
 
@@ -118,7 +121,9 @@ public class SpotifyApp {
     public static void top5CancionesGlobal(String date) {
 
         List<Cancion> resultado = getCancionesGlobal(date);
+        System.out.println("------------------------------------------------------------");
         System.out.println("Imprimiendo las 5 canciones que más aparecen en los top 50:");
+        System.out.println("------------------------------------------------------------");
         resultado.forEach(cancion -> System.out.println("Canción: " + cancion.getNombre()));
 
     }
@@ -157,7 +162,9 @@ public class SpotifyApp {
         }
         List<Artista> topArtistas = artistasHeap.extractAllSorted();
         Collections.reverse(topArtistas);
+        System.out.println("------------------------------------------------------------");
         System.out.println("Imprimiendo top 7 de artistas con más apariciones entre el " + fechaInicio + " y " + fechaFin);
+        System.out.println("------------------------------------------------------------");
         topArtistas.stream()
                 .limit(7)
                 .forEach(artista -> System.out.println("Nombre: " + artista.getNombre() +
@@ -178,7 +185,7 @@ public class SpotifyApp {
              CSVParser csvParser = new CSVParser(br, format)) {
             for (CSVRecord record : csvParser) {
                 String fechaRegistro = record.get("snapshot_date").trim();
-                String artistas = record.get("artists");
+                String artistas = record.get("artists").trim().toLowerCase();
                 if (fechaRegistro.equals(fecha) && artistas.contains(artistaBuscado)) {
                     apariciones++;
                 }
@@ -190,8 +197,12 @@ public class SpotifyApp {
 
     }
     public static void imprimirAparicionesArtista(String fecha, String artista) {
-        int apariciones = contarAparicionesArtista(fecha, artista);
+
+        String lowerCaseArtista = artista.trim().toLowerCase();
+        int apariciones = contarAparicionesArtista(fecha, lowerCaseArtista);
+        System.out.println("------------------------------------------------------------");
         System.out.println("El artista " + artista + " apareció " + apariciones + " veces en la fecha " + fecha);
+        System.out.println("------------------------------------------------------------");
     }
 
     public static int getCancionesTempoFecha(String fechaInicio, String fechaFin, double minTempo, double maxTempo) {
@@ -220,8 +231,10 @@ public class SpotifyApp {
     public static void imprimirCountTempo(String fechaInicio, String fechaFin, Double minTempo, Double maxTempo) {
 
         int count = getCancionesTempoFecha(fechaInicio, fechaFin, minTempo, maxTempo);
+        System.out.println("------------------------------------------------------------");
         System.out.println("Número de canciones con un tempo entre " + minTempo + " y " + maxTempo +
                 " desde " + fechaInicio + " hasta " + fechaFin + ": " + count);
+        System.out.println("------------------------------------------------------------");
     }
 
 }
